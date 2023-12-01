@@ -68,6 +68,8 @@ public class ClientHandler extends Thread {
         reminders.add(reminder);
         storage.saveReminders(reminders);
         scheduler.scheduleReminder(reminder);
+        System.out.println("New reminder added for " + reminder.getUserName() + ": " + reminder.getTaskDescription() + " at " + reminder.getDateTime());
+
     }
 
     private void sendUserReminders(String userName) throws IOException {

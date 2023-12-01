@@ -2,21 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Awesome-JavaScript-Projects" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/DailyPlannerJava" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Group-23(For Demo)" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Group-23-Fixed" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Group-23-NEW" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Group-23-presentation" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Internship-Project" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Resume-Ranker" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/SFC-The-Game" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/SecureNetworkServices" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Virtual-Classroom" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Year2_Team_Project_PC_Website" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/astonsu.io" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/automator" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/computational_intelligence" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/lan-chat-app" vcs="Git" />
   </component>
 </project>

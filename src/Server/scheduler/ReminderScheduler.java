@@ -24,7 +24,10 @@ public class ReminderScheduler {
             try {
                 ObjectOutputStream oos = clientStreams.get(reminder.getUserName());
                 if (oos != null) {
-                    oos.writeObject("Reminder: " + reminder.getTaskDescription());
+                    oos.writeObject("Reminder:  " + reminder.getTaskDescription());
+
+                    // Log when a reminder is sent
+                    System.out.println("Reminder sent to " + reminder.getUserName() + ": " + reminder.getTaskDescription() + " at  " + reminder.getDateTime());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
