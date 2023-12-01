@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -23,7 +25,9 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private ConcurrentHashMap<String, ObjectOutputStream> clientStreams;
-
+    private static final int MAX_REQUESTS_PER_MINUTE = 10; // Example limit
+    private static final ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Long> lastRequestTime = new ConcurrentHashMap<>();
     public ClientHandler(Socket socket, ReminderStorage storage, ReminderScheduler scheduler, ConcurrentHashMap<String, ObjectOutputStream> clientStreams) {
         this.clientSocket = socket;
         this.storage = storage;
@@ -40,8 +44,15 @@ public class ClientHandler extends Thread {
             oos = new ObjectOutputStream(clientSocket.getOutputStream());
 
             user = (User) ois.readObject();
+            String clientIP = clientSocket.getInetAddress().getHostAddress();
             System.out.println("Client connected: " + user.getName());
             clientStreams.put(user.getName(), oos);
+
+            if (isRateLimitExceeded(clientIP)) {
+                System.out.println("Rate limit exceeded for IP: " + clientIP);
+                clientSocket.close();
+                return;
+            }
 
             while (true) {
                 Object obj = ois.readObject();
@@ -54,12 +65,34 @@ public class ClientHandler extends Thread {
                     break; // Exit the loop if an "exit" command is received
                 }
             }
-            cleanup(user.getName());
 
         } catch (EOFException | SocketException e) {
             System.out.println("Client disconnected: " + e.getMessage());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                user = (User) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            cleanup(user.getName());
+        }
+    }
+    private boolean isRateLimitExceeded(String ip) {
+        long currentTime = System.currentTimeMillis();
+        lastRequestTime.putIfAbsent(ip, currentTime);
+        requestCounts.putIfAbsent(ip, new AtomicInteger(0));
+
+        long timeSinceLastRequest = currentTime - lastRequestTime.get(ip);
+        AtomicInteger requestCount = requestCounts.get(ip);
+
+        if (timeSinceLastRequest > TimeUnit.MINUTES.toMillis(1)) {
+            requestCount.set(1);
+            lastRequestTime.put(ip, currentTime);
+            return false;
+        } else {
+            return requestCount.incrementAndGet() > MAX_REQUESTS_PER_MINUTE;
         }
     }
 
