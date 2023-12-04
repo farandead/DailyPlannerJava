@@ -3,13 +3,19 @@ package Client;
 import Server.model.Reminder;
 import Server.model.User;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
+import javax.net.ssl.*;
+import java.io.FileInputStream;
 
 public class ReminderClient {
     private String host;
@@ -21,8 +27,14 @@ public class ReminderClient {
         this.port = port;
     }
 
-    public void start() {
-        try (Socket socket = new Socket(host, port);
+    public void start(){
+
+        System.setProperty("javax.net.ssl.trustStore", "src/SSL_Key/mykeystore2.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "faranzafar");
+
+        SSLSocketFactory ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+
+        try (SSLSocket socket = (SSLSocket) ssf.createSocket(host, port);
              ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
              Scanner scanner = new Scanner(System.in)) {
@@ -102,9 +114,11 @@ public class ReminderClient {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
+
+
         String host = "localhost";
-        int port = 1234; // Example port number, should match the server's
+        int port = 1234;
         ReminderClient client = new ReminderClient(host, port);
         client.start();
     }

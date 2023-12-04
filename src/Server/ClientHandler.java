@@ -25,7 +25,7 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private ConcurrentHashMap<String, ObjectOutputStream> clientStreams;
-    private static final int MAX_REQUESTS_PER_MINUTE = 10; // Example limit
+    private static final int MAX_REQUESTS_PER_MINUTE = 10; // Req limit
     private static final ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, Long> lastRequestTime = new ConcurrentHashMap<>();
     public ClientHandler(Socket socket, ReminderStorage storage, ReminderScheduler scheduler, ConcurrentHashMap<String, ObjectOutputStream> clientStreams) {
